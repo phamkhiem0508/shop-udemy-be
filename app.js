@@ -7,7 +7,7 @@ const getPrice = async () => {
   puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: ['--no-sandbox'],
     // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     // args: [ '--proxy-server=http:/188.132.222.234:8080' ]
@@ -25,7 +25,6 @@ const getPrice = async () => {
       interceptedRequest.url().endsWith(".jpg") ||
       interceptedRequest.url().endsWith(".jpeg") ||
       interceptedRequest.url().endsWith(".gif") ||
-      interceptedRequest.url().endsWith(".css") ||
       interceptedRequest.url().endsWith(".woff") ||
       interceptedRequest.url().endsWith(".woff2") ||
       interceptedRequest.url().endsWith(".ttf") ||
