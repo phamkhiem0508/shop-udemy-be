@@ -2,22 +2,46 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 
-(async () => {
+const getPrice = async () => {
   puppeteer.use(StealthPlugin());
   puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
   // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({ headless: true,executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' });
-
+  const browser = await puppeteer.launch({
+    headless: false,
+    // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    // args: [ '--proxy-server=http:/188.132.222.234:8080' ]
+  });
 
   await browser.createIncognitoBrowserContext();
-  
+
   const page = await browser.newPage();
 
-  await page.goto("https://www.udemy.com/course/ios-13-app-development-bootcamp/");
+  await page.setRequestInterception(true);
+  page.on("request", (interceptedRequest) => {
+    if (interceptedRequest.isInterceptResolutionHandled()) return;
+    if (
+      interceptedRequest.url().endsWith(".png") ||
+      interceptedRequest.url().endsWith(".jpg") ||
+      interceptedRequest.url().endsWith(".jpeg") ||
+      interceptedRequest.url().endsWith(".gif") ||
+      interceptedRequest.url().endsWith(".css") ||
+      interceptedRequest.url().endsWith(".woff") ||
+      interceptedRequest.url().endsWith(".woff2") ||
+      interceptedRequest.url().endsWith(".ttf") ||
+      interceptedRequest.url().endsWith(".svg") ||
+      interceptedRequest.url().endsWith(".ico")
+    )
+      interceptedRequest.abort();
+    else interceptedRequest.continue();
+  });
+
+  await page.goto(
+    "https://www.udemy.com/course/the-web-developer-bootcamp/?fbclid=IwAR1U9oVPPdseqA4OHkp7HDbLAQL-AHwM1P21sNsJ08CO4eb_qc0RyZd6glM"
+  );
 
   // Set screen size
 
-  await page.waitForSelector(".ud-text-with-links");
+  await page.waitForSelector("button[data-testid='smart-bar-opt-in-cta']");
 
   const element = await page.$("button[data-testid='smart-bar-opt-in-cta']");
 
@@ -25,33 +49,25 @@ import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 
   await page.waitForNavigation();
 
-  await page.waitForSelector("div[data-purpose='price-text-container'] div[data-purpose='course-price-text'] .ud-sr-only + span");
+  await page.waitForSelector(
+    "div[data-purpose='price-text-container'] div[data-purpose='course-price-text'].ud-clp-discount-price .ud-sr-only + span"
+  );
 
-  const price = await page.$("div[data-purpose='price-text-container'] div[data-purpose='course-price-text'] .ud-sr-only + span");
+  const price = await page.$(
+    "div[data-purpose='price-text-container'] div[data-purpose='course-price-text'].ud-clp-discount-price .ud-sr-only + span"
+  );
 
-  let value = await page.evaluate(el => el.textContent, price)
+  // const img  = await page.$eval("div[data-purpose='introduction-asset'] img", (el) => {
+  //   return el
+  // })
+
+  // console.log(img)
+
+  let value = await page.evaluate((el) => el.textContent, price);
 
   console.log(value);
 
+  await browser.close();
+};
 
-
-
-  // Type into search box
-  //   await page.type('.search-box__input', 'automate beyond recorder');
-
-  // Wait and click on first result
-  //   const searchResultSelector = '.ud-text-with-links';
-  //   const textSelector = await page.waitForSelector(searchResultSelector);
-
-  //   // Locate the full title with a unique string
-  // //   const textSelector = await page.waitForSelector(
-  // //     'text/Customize and automate'
-  // //   );
-
-  //   const fullTitle = await textSelector?.evaluate(el => el.textContent);
-
-  //   // Print the full title
-  //   console.log('The title of this blog post is "%s".', fullTitle);
-
-    // await browser.close();
-})();
+  getPrice();
