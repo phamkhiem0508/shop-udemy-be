@@ -8,6 +8,7 @@ const getPrice = async () => {
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch({
     headless: false,
+    args: ['--no-sandbox'],
     // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     // args: [ '--proxy-server=http:/188.132.222.234:8080' ]
   });
