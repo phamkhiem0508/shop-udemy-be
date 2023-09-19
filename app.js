@@ -8,30 +8,31 @@ import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch({ headless: true,executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' });
 
+
   await browser.createIncognitoBrowserContext();
   
   const page = await browser.newPage();
 
-  // await page.setUserAgent(
-  //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
-  // );
-  // await page.setJavaScriptEnabled(true);
-
-  // Navigate the page to a URL
-  await page.goto("https://www.udemy.com/course/the-web-developer-bootcamp/?fbclid=IwAR1U9oVPPdseqA4OHkp7HDbLAQL-AHwM1P21sNsJ08CO4eb_qc0RyZd6glM");
-
-  // await page.setViewport({ width: 1440, height: 1024 });
-
+  await page.goto("https://www.udemy.com/course/ios-13-app-development-bootcamp/");
 
   // Set screen size
 
   await page.waitForSelector(".ud-text-with-links");
 
-  const element = await page.$("span[data-purpose='smart-bar-subtitle']");
+  const element = await page.$("button[data-testid='smart-bar-opt-in-cta']");
 
-  let value = await page.evaluate(el => el.textContent, element)
+  element.click();
 
-  console.log(value)
+  await page.waitForNavigation();
+
+  await page.waitForSelector("div[data-purpose='price-text-container'] div[data-purpose='course-price-text'] .ud-sr-only + span");
+
+  const price = await page.$("div[data-purpose='price-text-container'] div[data-purpose='course-price-text'] .ud-sr-only + span");
+
+  let value = await page.evaluate(el => el.textContent, price)
+
+  console.log(value);
+
 
 
 
