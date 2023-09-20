@@ -2,29 +2,27 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 
-const getPrice = async () => {
-  puppeteer.use(StealthPlugin());
-  puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
-  // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({
-    headless: false,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-accelerated-2d-canvas",
-      "--no-first-run",
-      "--no-zygote",
-      "--single-process",
-      "--disable-gpu"
-    ],
-    // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-    // args: [ '--proxy-server=http:/188.132.222.234:8080' ]
-  });
+puppeteer.use(StealthPlugin());
+puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
+const browser = await puppeteer.launch({
+  headless: true,
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-accelerated-2d-canvas",
+    "--no-first-run",
+    "--no-zygote",
+    "--single-process",
+    "--disable-gpu",
+    "javascript:close()",
+  ],
+});
+
+const getPrice = async (pageNumber) => {
+  const page =  await browser.newPage();
 
   try {
-    const page = await browser.newPage();
-
     await page.setRequestInterception(true);
     page.on("request", (interceptedRequest) => {
       if (interceptedRequest.isInterceptResolutionHandled()) return;
@@ -33,7 +31,7 @@ const getPrice = async () => {
         interceptedRequest.url().endsWith(".jpg") ||
         interceptedRequest.url().endsWith(".jpeg") ||
         interceptedRequest.url().endsWith(".gif") ||
-        // interceptedRequest.url().endsWith(".css") ||
+        interceptedRequest.url().endsWith(".css") ||
         interceptedRequest.url().endsWith(".woff") ||
         interceptedRequest.url().endsWith(".woff2") ||
         interceptedRequest.url().endsWith(".ttf") ||
@@ -51,7 +49,6 @@ const getPrice = async () => {
     // Set screen size
 
     await page.waitForSelector("button[data-testid='smart-bar-opt-in-cta']");
-
 
     await page.click("button[data-testid='smart-bar-opt-in-cta']");
 
@@ -75,16 +72,16 @@ const getPrice = async () => {
 
     console.log(value);
 
-    // await browser.close();
+    await page.close();
   } catch (e) {
-    await browser.close();
+    await page.close();
   }
 };
 
-// for (let i = 0; i < 10; i++) {
-//   setTimeout(() => {
-//     getPrice();
-//   }, 100 * i);
-// }
+for (let i = 0; i < 10; i++) {
+  setTimeout(() => {
+    getPrice(i);
+  }, 1000 * i);
+}
 
-getPrice();
+
