@@ -3,9 +3,9 @@ import { udemyController } from "../controllers/udemyController.js";
 
 const router = express.Router();
 
-router.get("/account-list",udemyController.getUdemyAccountList);
+router.get("/admin/udemy/account-list",udemyController.getUdemyAccountList);
 
-router.post("/add-account",udemyController.addUdemyAccount);
+router.post("/admin/udemy/add-account",udemyController.addUdemyAccount);
 
 
 export default router;

@@ -6,8 +6,13 @@ const getUdemyAccountList = async (req, res) => {
 };
 
 const addUdemyAccount = async (req, res) => {
-    const result = validator.isEmpty(req?.body?.email);
-    console.log(result);
+    const {email, password} = req.body;
+    if(validator.isEmpty(email || "")) {
+        res.status(400).send({
+            message: "Email is required"
+        });
+        return;
+    }
 }
 
 export const udemyController = {

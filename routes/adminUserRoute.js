@@ -7,4 +7,5 @@ router.post("/admin/user/register",  adminUserController.registerUser);
 
 router.put("/admin/user/update", adminUserController.updateUser);
 
+
 export default router;
