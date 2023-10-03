@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/admin/user", adminUserRoute);
+app.use(adminUserRoute);
 
 app.use("/admin/udemy", udemyRoute);
 
