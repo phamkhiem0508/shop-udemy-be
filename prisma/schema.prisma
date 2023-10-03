@@ -19,6 +19,27 @@ model AdminUser {
   updatedAt DateTime @updatedAt
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  username  String   @unique @db.Char(20)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model UdemyAccount{
+  id        Int      @id @default(autoincrement())
+  email     String?   @unique
+  name      String?
+  username  String?   @unique @db.Char(20)
+  json      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
 // model Profile {
 //   id     Int    @id @default(autoincrement())
 //   bio    String
