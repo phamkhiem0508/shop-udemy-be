@@ -3,9 +3,11 @@ import { adminUserController } from "../controllers/adminUserController.js";
 
 const router = express.Router();
 
-router.post("/admin/user/register",  adminUserController.registerUser);
+router.post("/admin/login", adminUserController.loginUser);
 
-router.put("/admin/user/update", adminUserController.updateUser);
+router.post("/admin/register",  adminUserController.registerUser);
+
+router.put("/admin/update", adminUserController.updateUser);
 
 
 export default router;
