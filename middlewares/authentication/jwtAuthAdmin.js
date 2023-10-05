@@ -2,7 +2,7 @@ import JwtAuth from './jwtAuth.js';
 
 class JwtAuthAdmin extends JwtAuth{
     constructor(){
-        super(process.env.ADMIN_JWT_TOKEN);
+        super("ADMIN_JWT_TOKEN");
     }
 }
 

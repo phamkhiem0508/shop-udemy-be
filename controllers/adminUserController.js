@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
     });
   }
 
-  const adminUser = await prisma.adminUser.findUnique({ where: { email } });
+  const adminUser = await prisma.adminUser.findUnique({ where: { email }});
 
   if(adminUser === null){
     return res.status(400).send({message: "Not found this account"})
@@ -58,6 +58,8 @@ const loginUser = async (req, res) => {
   if(adminUser.password !== password){
     return res.status(400).send({message: "Password is not correct"})
   }
+
+  delete adminUser?.password;
 
   return res.json({...adminUser, token: jwtAuthAdmin.signToken({email: adminUser.email})});
 };
