@@ -8,9 +8,9 @@ class JwtAuth{
         this._token = process.env[tokenType];
     }
 
-    verifyToken(token){
+    verifyToken(token,callbackFn){
         // const userToken = req.headers.authorization.split(" ")[1];
-        return jwt.verify(token, this._token);
+        return jwt.verify(token, this._token,callbackFn);
     }
 
     signToken(data){

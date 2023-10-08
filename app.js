@@ -17,6 +17,11 @@ app.use(adminUserRoute);
 
 app.use(udemyRoute);
 
+app.use(function (err, req, res, next) {
+  console.log(err);
+  res.status(500).send({ message: "Something broke!" });
+});
+
 // console.log(crypto.randomBytes(64).toString('hex'));
 app.listen(3000, () => {
   console.log("Example app listening on port 3000!");

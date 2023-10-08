@@ -1,0 +1,1 @@
+export const jwtRegex = "^[A-Za-z0-9_-]{2,}(?:\.[A-Za-z0-9_-]{2,}){2}$";
