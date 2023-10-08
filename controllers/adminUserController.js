@@ -49,23 +49,48 @@ const loginUser = async (req, res) => {
     });
   }
 
-  const adminUser = await prisma.adminUser.findUnique({ where: { email }});
+  const adminUser = await prisma.adminUser.findUnique({ where: { email } });
 
-  if(adminUser === null){
-    return res.status(400).send({message: "Not found this account"})
+  if (adminUser === null) {
+    return res.status(400).send({ message: "Not found this account" });
   }
 
-  if(adminUser.password !== password){
-    return res.status(400).send({message: "Password is not correct"})
+  if (adminUser.password !== password) {
+    return res.status(400).send({ message: "Password is not correct" });
   }
 
   delete adminUser?.password;
 
-  return res.json({...adminUser, token: jwtAuthAdmin.signToken({email: adminUser.email})});
+  return res.json({ user: { ...adminUser }, token: jwtAuthAdmin.signToken({ email: adminUser.email }) });
 };
+
+const checkToken = async (req, res) => {
+  const token = req.body?.token ||  req.headers?.authorization?.split(" ")[1];
+
+  if(validator.isEmpty(token || "")){
+    return res.status(400).send({ message: "Token is required" });
+  }
+
+  const decoded = jwtAuthAdmin.verifyToken(token);
+
+  if (!decoded) {
+    return res.status(400).send({ message: "Token is not valid" });
+  }
+
+  const adminUser = await prisma.adminUser.findUnique({ where: { email: decoded.email } });
+
+  if (adminUser === null) {
+    return res.status(400).send({ message: "Not found this account" });
+  }
+
+  delete adminUser?.password;
+
+  return res.json({ user: { ...adminUser }, token: jwtAuthAdmin.signToken({ email: adminUser.email }) });
+}
 
 export const adminUserController = {
   registerUser,
   updateUser,
   loginUser,
+  checkToken
 };

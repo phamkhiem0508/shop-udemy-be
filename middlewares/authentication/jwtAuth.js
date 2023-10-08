@@ -9,8 +9,8 @@ class JwtAuth{
     }
 
     verifyToken(token){
-        const userToken = req.headers.authorization.split(" ")[1];
-        return jwt.verify(userToken, this._token);
+        // const userToken = req.headers.authorization.split(" ")[1];
+        return jwt.verify(token, this._token);
     }
 
     signToken(data){

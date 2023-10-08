@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.post("/admin/login", adminUserController.loginUser);
 
+router.post("/admin/checkToken", adminUserController.checkToken);
+
 router.post("/admin/register",  adminUserController.registerUser);
 
 router.put("/admin/update", adminUserController.updateUser);
