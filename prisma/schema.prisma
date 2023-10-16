@@ -14,7 +14,7 @@ model AdminUser {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
-  password  String?   @db.Char(60)
+  password  String?  @db.Char(60)
   username  String   @unique @db.Char(20)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,16 +29,16 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model UdemyAccount{
+model UdemyAccount {
   id        Int      @id @default(autoincrement())
-  email     String?   @unique
+  email     String?  @unique
   name      String?
-  username  String?   @unique @db.Char(20)
-  json      String?
+  username  String?  @unique @db.Char(20)
+  password  String?  @db.Char(60)
+  json      String?  @db.MediumText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
 
 // model Profile {
 //   id     Int    @id @default(autoincrement())

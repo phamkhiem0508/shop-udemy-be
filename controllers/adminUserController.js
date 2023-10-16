@@ -4,19 +4,19 @@ import validator from "validator";
 import { jwtRegex } from "../utils/regex.js";
 import { handleCallback } from "../utils/handleCallback.js";
 
-const registerUser = async (req, res) => {
+const registerUser = handleCallback(async (req, res) => {
   const adminUser = await prisma.adminUser.create({
     data: {
       email: req.body.email,
       username: req.body.username,
+      password: req.body.password,
     },
   });
-  console.log(error);
 
   return res.json(adminUser);
-};
+});
 
-const updateUser = async (req, res) => {
+const updateUser =handleCallback( async (req, res) => {
   const adminUser = await prisma.adminUser.update({
     where: {
       email: req.body.email,
@@ -28,7 +28,7 @@ const updateUser = async (req, res) => {
   });
 
   return res.json(adminUser);
-};
+})
 
 const loginUser = handleCallback(async (req, res) => {
   const { email, password } = req.body;
@@ -64,7 +64,7 @@ const loginUser = handleCallback(async (req, res) => {
   delete adminUser?.password;
 
   return res.json({ user: { ...adminUser }, token: jwtAuthAdmin.signToken({ email: adminUser.email }) });
-})
+});
 
 const checkToken = handleCallback(async (req, res) => {
   const headerToken = req?.headers?.authorization.split(" ")[1] || "";
