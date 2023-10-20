@@ -7,7 +7,7 @@ const getPrice = async (pageNumber) => {
   puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
   const browser = await puppeteer.launch({
     headless: false,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
 
