@@ -7,7 +7,7 @@ const getPrice = async (pageNumber) => {
   puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
   const browser = await puppeteer.launch({
     headless: false,
-    args: [],
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
   const page = await browser.newPage();
 
@@ -34,29 +34,28 @@ const getPrice = async (pageNumber) => {
     await page.goto("https://wgualumni.udemy.com/");
 
     await page.waitForSelector("a[data-purpose='sso-button']");
-    
-    await page.click("a[data-purpose='sso-button']");
 
+    await page.click("a[data-purpose='sso-button']");
 
     await page.waitForSelector("input#login-username");
 
     await page.$eval("input#login-username", (el) => {
       console.log("found");
-      el.value = "scooter1"
-    }); 
+      el.value = "scooter1";
+    });
 
     await page.$eval("input#login-password", (el) => {
-      el.value = "BuckLM90"
+      el.value = "BuckLM90";
     });
 
     await page.click("button#signOnButton");
 
     await page.waitForNavigation();
 
-    const cookies = await page.cookies('https://wgualumni.udemy.com/');
+    const cookies = await page.cookies("https://wgualumni.udemy.com/");
 
     console.log(cookies);
-    
+
     await page.close();
   } catch (e) {
     console.log(e);
