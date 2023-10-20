@@ -1,12 +1,13 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
+import fs from "fs";
 
 const getPrice = async (pageNumber) => {
   puppeteer.use(StealthPlugin());
   puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
@@ -20,7 +21,7 @@ const getPrice = async (pageNumber) => {
         interceptedRequest.url().endsWith(".jpg") ||
         interceptedRequest.url().endsWith(".jpeg") ||
         interceptedRequest.url().endsWith(".gif") ||
-        interceptedRequest.url().endsWith(".css") ||
+        // interceptedRequest.url().endsWith(".css") ||
         interceptedRequest.url().endsWith(".woff") ||
         interceptedRequest.url().endsWith(".woff2") ||
         interceptedRequest.url().endsWith(".ttf") ||
@@ -54,7 +55,7 @@ const getPrice = async (pageNumber) => {
 
     const cookies = await page.cookies("https://wgualumni.udemy.com/");
 
-    console.log(cookies);
+    fs.writeFileSync("./cookies.json", JSON.stringify(cookies));
 
     await page.close();
   } catch (e) {
