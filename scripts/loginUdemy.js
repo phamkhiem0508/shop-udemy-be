@@ -7,7 +7,7 @@ const getPrice = async (pageNumber) => {
   puppeteer.use(StealthPlugin());
   puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
@@ -43,7 +43,7 @@ const getPrice = async (pageNumber) => {
     await page.$eval("input#login-username", (el) => {
       console.log("found");
       el.value = "scooter1";
-    });
+  });
 
     await page.$eval("input#login-password", (el) => {
       el.value = "BuckLM90";
@@ -53,11 +53,15 @@ const getPrice = async (pageNumber) => {
 
     await page.waitForNavigation();
 
-    const cookies = await page.cookies("https://wgualumni.udemy.com/");
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
+    await page.click("a[data-purpose='user-dropdown'");
+
+   const cookies = await page.cookies();
 
     fs.writeFileSync("./cookies.json", JSON.stringify(cookies));
 
-    await page.close();
+    // await page.close();
   } catch (e) {
     console.log(e);
     await page.close();
