@@ -35,6 +35,7 @@ model UdemyAccount {
   name      String?
   username  String?  @unique @db.Char(20)
   password  String?  @db.Char(60)
+  type      String?  @db.Char(20)
   json      String?  @db.MediumText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

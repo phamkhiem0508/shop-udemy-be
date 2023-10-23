@@ -8,4 +8,6 @@ router.get("/admin/udemy/account-list",udemyController.getUdemyAccountList);
 
 router.post("/admin/udemy/add-account",udemyController.addUdemyAccount);
 
+router.post("/admin/udemy/download-cookies",udemyController.getAccountCookies);
+
 export default router;

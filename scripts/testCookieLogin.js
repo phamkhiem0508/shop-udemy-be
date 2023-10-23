@@ -2,13 +2,15 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import fs from "fs";
+import path, { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
 
 const getPrice = async (pageNumber) => {
   puppeteer.use(StealthPlugin());
   puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
   const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox"],
+    headless: false,
+    args: ["--no-sandbox", "--incognito"],
   });
   const page = await browser.newPage();
 
@@ -32,38 +34,14 @@ const getPrice = async (pageNumber) => {
       else interceptedRequest.continue();
     });
 
+
+    const cookie = fs.readFileSync(`${path.resolve() + "/scripts/cookies.json"}`, { encoding: "utf8", flag: "r" });
+
+    await page.setCookie(...JSON.parse(cookie));
+
     await page.goto("https://wgualumni.udemy.com/");
 
-    await page.waitForSelector("a[data-purpose='sso-button']");
-
-    await page.click("a[data-purpose='sso-button']");
-
-    await page.waitForSelector("input#login-username");
-
-    await page.$eval("input#login-username", (el) => {
-      console.log("found");
-      el.value = "scooter1";
-    });
-
-    await page.$eval("input#login-password", (el) => {
-      el.value = "BuckLM90";
-    });
-
-    await page.click("button#signOnButton");
-
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-
     // await page.click("a[data-purpose='user-dropdown'");
-
-    const cookies = await page.cookies();
-
-    if(cookies.filter((cookie) => cookie.name === "access_token").length === 0){
-      throw new Error("Login Udemy failed");
-    }
-
-    fs.writeFileSync("./cookies.json", JSON.stringify(cookies.map((cookie) => {
-      return { ...cookie, sameSite: cookie?.sameSite?.toLowerCase() };
-    })));
 
     // await page.close();
   } catch (e) {

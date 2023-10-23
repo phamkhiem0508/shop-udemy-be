@@ -5,18 +5,42 @@ import { jwtRegex } from "../utils/regex.js";
 import { handleCallback } from "../utils/handleCallback.js";
 
 const registerUser = handleCallback(async (req, res) => {
+  const { email, username, password } = req.body;
+
+  console.log(password);
+
+  if (validator.isEmpty(email || "")) {
+    return res.status(400).send({
+      message: "Email is required",
+    });
+  }
+
+  if(validator.isEmpty(password || "")) {
+    return res.status(400).send({
+      message: "Password is required",
+    });
+  }
+
+  const adminUserExist = await prisma.adminUser.findUnique({ where: { email } });
+
+  if (adminUserExist) {
+    return res.status(400).send({
+      message: "Email is already exist",
+    });
+  }
+
   const adminUser = await prisma.adminUser.create({
     data: {
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password,
+      email,
+      password,
+      username,
     },
   });
 
   return res.json(adminUser);
 });
 
-const updateUser =handleCallback( async (req, res) => {
+const updateUser = handleCallback(async (req, res) => {
   const adminUser = await prisma.adminUser.update({
     where: {
       email: req.body.email,
@@ -28,7 +52,7 @@ const updateUser =handleCallback( async (req, res) => {
   });
 
   return res.json(adminUser);
-})
+});
 
 const loginUser = handleCallback(async (req, res) => {
   const { email, password } = req.body;
@@ -53,7 +77,9 @@ const loginUser = handleCallback(async (req, res) => {
 
   const adminUser = await prisma.adminUser.findUnique({ where: { email } });
 
-  if (adminUser === null) {
+  console.log(adminUser);
+
+  if (!adminUser) {
     return res.status(400).send({ message: "Not found this account" });
   }
 
