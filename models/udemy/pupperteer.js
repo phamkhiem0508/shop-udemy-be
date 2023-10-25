@@ -56,7 +56,7 @@ export default class Pupperteer {
   }
 
   closeBrowser() {
-    this.browser.close();
+    return this.browser.close();
   }
 
   get try() {
@@ -66,21 +66,20 @@ export default class Pupperteer {
         if (typeof target[name] === "function") {
           return new Proxy(target[name], {
             // Intercept method call
-            apply(target, self, args) {
+            async apply(target, self, args) {
               // console.log(target);
-              console.log(self);
               try {
-                return Promise.race([
+                return await Promise.race([
                   new Promise((resolve, reject) => {
-                    setTimeout(() => reject("Time out"), 2000);
+                    setTimeout(() => reject("Time out"), 30000);
                   }),
                   target.apply(self, args),
                 ]);
               } catch (e) {
-                console.log(e);
+                console.log("catch in puppperter");
 
-                if (!!this.browser) {
-                  this.browser.close();
+                if (!!self.browser) {
+                  self.browser.close();
                 }
                 // swallow error
               }

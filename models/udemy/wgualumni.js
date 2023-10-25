@@ -1,7 +1,6 @@
 import Pupperteer from "./pupperteer.js";
 import fs from "fs";
 
-
 export default class Wgualumni extends Pupperteer{
     constructor(type,domain){
         super(type,domain);
@@ -35,14 +34,14 @@ export default class Wgualumni extends Pupperteer{
     
         const cookies = await this.page.cookies(this._domain);
 
-        const formatedCookies = this.formatCookies(cookies);
+        const formatedCookies = await this.formatCookies(cookies);
 
         fs.writeFileSync(
           "./cookies.json",
           JSON.stringify(formatedCookies)
         );
 
-        this.closeBrowser();
+        await this.closeBrowser();
 
         return formatedCookies;
     }
