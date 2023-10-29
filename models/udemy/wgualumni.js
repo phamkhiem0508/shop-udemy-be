@@ -36,16 +36,13 @@ export default class Wgualumni extends Pupperteer{
 
         const formatedCookies = await this.formatCookies(cookies);
 
-        fs.writeFileSync(
-          "./cookies.json",
-          JSON.stringify(formatedCookies)
-        );
+        // fs.writeFileSync(
+        //   "./cookies.json",
+        //   JSON.stringify(formatedCookies)
+        // );
 
         await this.closeBrowser();
 
         return formatedCookies;
     }
 }
-
-const wgualumni = new Wgualumni("wgualumni","https://wgualumni.udemy.com/");
-wgualumni.try.login("scooter1","BuckLM90");

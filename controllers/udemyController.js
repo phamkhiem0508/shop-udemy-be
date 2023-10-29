@@ -7,9 +7,9 @@ import Wgualumni from "../models/udemy/wgualumni.js";
 const getUdemyAccountList = handleCallback(async (req, res) => {});
 
 const addUdemyAccount = handleCallback(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
 
-  if (!validator.isEmail(email || "") || validator.isEmpty(username || "")) {
+  if (!validator.isEmail(email || "") && validator.isEmpty(username || "")) {
     res.status(400).send({
       message: "Email or Username is not valid",
     });
@@ -25,22 +25,21 @@ const addUdemyAccount = handleCallback(async (req, res) => {
 
   const udemyAccount = await prisma.udemyAccount.findUnique({
     where: {
-      email,
+      username,
     },
   });
 
   if (udemyAccount) {
     res.status(400).send({
-      message: "Email is already exist",
+      message: "Username is already exist",
     });
     return;
   }
 
   const newUdemyAccount = await prisma.udemyAccount.create({
     data: {
-      email,
+      username,
       password,
-      json: jsoncookies,
     },
   });
 
@@ -57,16 +56,15 @@ const addUdemyAccount = handleCallback(async (req, res) => {
 export const getAccountCookies = handleCallback(async (req, res) => {
   const { email, username } = req.body;
 
-  if (!validator.isEmail(email || "") || validator.isEmpty(username || "")) {
+  if (!validator.isEmail(email || "") && validator.isEmpty(username || "")) {
     res.status(400).send({
       message: "Email or Username is not valid",
     });
     return;
   }
-
   const udemyAccount = await prisma.udemyAccount.findUnique({
     where: {
-      or: [{ email }, { username }],
+      username,
     },
   });
 

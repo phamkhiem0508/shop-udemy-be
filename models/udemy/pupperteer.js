@@ -76,11 +76,10 @@ export default class Pupperteer {
                   target.apply(self, args),
                 ]);
               } catch (e) {
-                console.log("catch in puppperter");
-
                 if (!!self.browser) {
                   self.browser.close();
                 }
+                return Promise.reject(e);
                 // swallow error
               }
             },
